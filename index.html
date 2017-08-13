@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        #c {
+            border: 2px solid black;
+        }
+    </style>
+    <canvas id="c" width="400" height="300"></canvas>
+
+    <script>
+        const log = console.log.bind(console),
+            canvas = document.querySelector('#c'),
+            context = canvas.getContext('2d');
+
+        let x = 100, y = 200, speed = 5;
+
+        let img = new Image;
+        img.src = './img/paddle.png';
+        img.onload = function () {
+            context.drawImage(img, x, y);
+        }
+
+        var leftDown = false;
+        var rightDown = false;
+
+        window.addEventListener('keydown', function(e){
+            let k = e.keyCode;
+            if (k === 37) {
+                leftDown = true;
+            } else if (k === 39) {
+                rightDown = true;
+            }
+        })
+        window.addEventListener('keyup', function(e){
+            let k = e.keyCode;
+            if (k === 37) {
+                leftDown = false;
+            } else if (k === 39) {
+                rightDown = false;
+            }
+        })
+
+        setInterval(function(){
+            if (leftDown && x >0) {
+                x -= speed;
+            } else if (rightDown && x + img.naturalWidth < canvas.width) {
+                x += speed;
+            }
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(img, x, y);
+        }, 16.67)
+    </script>
+</body>
+</html>
