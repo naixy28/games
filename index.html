@@ -47,6 +47,17 @@
             }
         })
 
+
+        // init ball
+        context.fillStyle = 'red';
+        let ballDeg = 45,
+            speedX = 2,
+            speedY = 2,
+            bX = 10,
+            bY = 10,
+            bWidth = 20,
+            bHeight = 20;
+
         setInterval(function(){
             if (leftDown && x >0) {
                 x -= speed;
@@ -56,6 +67,18 @@
 
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.drawImage(img, x, y);
+
+            // draw ball
+            if (bX <= 0 || bX + bWidth >= 400) {
+                speedX = -speedX;
+            }
+            if (bY <= 0 || bY + bHeight >= 300) {
+                speedY = -speedY;
+            }
+
+            let cX = bX += speedX,
+                cY = bY += speedY;
+            context.fillRect(cX , cY, bWidth, bHeight);
         }, 16.67)
     </script>
 </body>
