@@ -9,6 +9,23 @@ var __main = function () {
 
     game.update = function() {
         ball.move();
+
+        var intRet = paddle.intersect(ball);
+        // ball.speedX = int.x ?  ball.speedX *= -1 : ball.speedX;
+        // ball.speedY = int.y ?  ball.speedY *= -1 : ball.speedY;
+
+        if (intRet.isTouch) {
+            // debugger;
+            if (intRet.x) {
+                log('touch x')
+                ball.speedX *= -1;
+            }
+            if (intRet.y) {
+                log('touch y')
+                ball.speedY *= -1;
+            }
+        }
+        
     }
 
     game.draw = function() {
@@ -16,32 +33,6 @@ var __main = function () {
         this.drawImg(ball);
     }
 
-    // init ball
-    // context.fillStyle = 'red';
-    // let ballDeg = 45,
-    //     speedX = 2,
-    //     speedY = 2,
-    //     bX = 10,
-    //     bY = 10,
-    //     bWidth = 20,
-    //     bHeight = 20;
-
-    // setInterval(function () {
-        
-
-
-    //     // draw ball
-    //     if (bX <= 0 || bX + bWidth >= 400) {
-    //         speedX = -speedX;
-    //     }
-    //     if (bY <= 0 || bY + bHeight >= 300) {
-    //         speedY = -speedY;
-    //     }
-
-    //     let cX = bX += speedX,
-    //         cY = bY += speedY;
-    //     context.fillRect(cX, cY, bWidth, bHeight);
-    // }, 16.67)
 }
 
 __main();
@@ -58,15 +49,15 @@ function Ball() {
         img: image, 
         x: 100,
         y: 200,
-        speedY: 10,
-        speedX: 10,
+        speedY: 2,
+        speedX: 2,
         fired: false,
         move() {
             if (this.fired){
-                if (this.x < 0 || this.x > 400) {
+                if (this.x < 0 || this.x + this.img.naturalWidth > 400) {
                     this.speedX *= -1;
                 }
-                if (this.y < 0 || this.y > 300) {
+                if (this.y < 0 || this.y + this.img.naturalHeight > 300) {
                     this.speedY *= -1;
                 }
 
@@ -87,8 +78,8 @@ function Paddle() {
     var o = {
         img: image, 
         x: 100,
-        y: 200,
-        speed: 5,
+        y: 250,
+        speed: 1,
         moveLeft() {
             if (this.x <= 0) return;
             this.x -= this.speed;            
@@ -96,6 +87,39 @@ function Paddle() {
         moveRight() {
             if (this.x + this.img.naturalWidth >= 400) return;
             this.x += this.speed;            
+        },
+        intersect (o) {
+            var cen1 = {
+                x: this.x + this.img.naturalWidth / 2,
+                y: this.y + this.img.naturalHeight / 2,
+            };
+
+            var cen2 = {
+                x: o.x + o.img.naturalWidth / 2,
+                y: o.y + o.img.naturalHeight / 2, 
+            }
+
+            var ret = {
+                x: false,
+                y: false,
+                isTouch: false
+            }
+            
+            if ( Math.abs(Math.abs(cen1.y - cen2.y) - this.img.naturalHeight / 2 - o.img.naturalHeight / 2) <= 3 ) {
+                ret.y = true;    
+            }
+            if ( Math.abs(Math.abs(cen1.x - cen2.x) - this.img.naturalWidth / 2 - o.img.naturalWidth / 2) <= 3 ) {
+                ret.x = true;    
+            }
+
+            if( Math.abs(cen1.y - cen2.y) - this.img.naturalHeight / 2 - o.img.naturalHeight / 2 <= 0 &&
+                Math.abs(cen1.x - cen2.x) - this.img.naturalWidth / 2 - o.img.naturalWidth / 2 <= 0) {
+                    ret.isTouch = true;
+                }
+
+            // ret.isTouch = ret.x === ret.y === true ? true : false;
+
+            return ret;
         }
     }
 
